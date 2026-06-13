@@ -6,4 +6,7 @@ uvicorn
 watchdog
 langchain_groq
 fastapi
-langgraph-cli[inmem]
+langgraph-cli[inmem] # Responsible in creating your local stategraph in langgraph studio and debug the entire things. 
+"""
+To debug, write - 'langgraph dev' in the terminal.
+"""

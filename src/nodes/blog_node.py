@@ -20,7 +20,7 @@ class BlogNode:
             
             """
             
-            system_message= promp.format(topic=state["topic"])
+            system_message= prompt.format(topic=state["topic"])
             response= self.llm.invoke(system_message)
             
             return {"blog": {"title": response.content}}
