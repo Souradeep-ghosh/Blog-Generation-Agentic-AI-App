@@ -5,17 +5,18 @@ from src.llms.groqllm import GroqLLM
 
 import os
 from dotenv import load_dotenv
-load_dotenv()
 
-app=FastAPI()
 
 print(os.getenv("LANGCHAIN_API_KEY"))
 
 
-# LangSmith tracing setup
+load_dotenv()
+
+app = FastAPI()
+
 os.environ["LANGSMITH_API_KEY"] = os.getenv("LANGCHAIN_API_KEY")
-os.environ["LANGCHAIN_TRACING_V2"] = "true"
-os.environ["LANGCHAIN_PROJECT"] = os.getenv("LANGCHAIN_PROJECT", "BlogAgentic")
+os.environ["LANGCHAIN_TRACING_V2"] ="true"         
+os.environ["LANGCHAIN_PROJECT"] ="BlogAgentic"
 
 ## API's
 
@@ -24,6 +25,7 @@ async def create_blogs(request:Request):
     
     data=await request.json()
     topic= data.get("topic","")
+    language = data.get("language", "")
 
     ## get the llm object
 
@@ -32,9 +34,16 @@ async def create_blogs(request:Request):
 
     ## get the graph
     graph_builder=GraphBuilder(llm)
-    if topic:
+    
+    if language and topic:
+        graph=graph_builder.setup_graph(usecase="language")
+        state=graph.invoke({"topic":topic, "current_language":language.lower()})
+    
+    elif topic:
         graph=graph_builder.setup_graph(usecase="topic")
         state=graph.invoke({"topic":topic})
+    
+        
 
     return {"data":state}
 
